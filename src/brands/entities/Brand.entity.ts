@@ -14,4 +14,7 @@ export class Brand {
 
   @Column({ default: false })
   deleted: boolean;
+
+  @OneToMany(() => Game, (game) => game.brand)
+  games: Game[];
 }

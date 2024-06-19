@@ -1,4 +1,5 @@
-import { Brand } from 'src/brands/entities/brand.entity';
+import { Brand } from 'src/brands/entities/Brand.entity';
+import { Family } from 'src/families/entities/Family.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'games' })
@@ -32,4 +33,10 @@ export class Game {
 
   @Column({ default: false })
   deleted: boolean;
+
+  @ManyToOne(() => Brand, (brand) => brand.games)
+  brand: Brand;
+
+  @ManyToOne(() => Family, (family) => family.games)
+  family: Family;
 }
