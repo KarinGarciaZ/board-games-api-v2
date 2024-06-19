@@ -6,6 +6,8 @@ import { FamiliesModule } from './families/families.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Brand } from './brands/entities/Brand.entity';
 import { ConfigModule } from '@nestjs/config';
+import { GamesModule } from './games/games.module';
+import { Game } from './games/entities/game.entity';
 
 @Module({
   imports: [
@@ -19,11 +21,12 @@ import { ConfigModule } from '@nestjs/config';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [Brand],
+      entities: [Game, Brand],
       synchronize: true,
     }),
     BrandsModule,
     FamiliesModule,
+    GamesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
