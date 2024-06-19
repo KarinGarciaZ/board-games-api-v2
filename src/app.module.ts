@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Brand } from './brands/entities/Brand.entity';
 import { ConfigModule } from '@nestjs/config';
 import { GamesModule } from './games/games.module';
-import { Game } from './games/entities/game.entity';
+import { Game } from './games/entities/Game.entity';
 import { Family } from './families/entities/Family.entity';
 
 @Module({

@@ -37,6 +37,7 @@ export class BrandsService {
   async findBrand(id: number): Promise<Brand> {
     const brand = await this.brandRepository.findOne({
       where: { id, deleted: false },
+      relations: ['games'],
     });
 
     if (!brand) {

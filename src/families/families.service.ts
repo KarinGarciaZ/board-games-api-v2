@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Family } from './entities/Family.entity';
-import { Repository, UpdateResult } from 'typeorm';
+import { FindOneOptions, Repository, UpdateResult } from 'typeorm';
 import { CreateFamilyDto } from './dto/create-family.dto';
 import { UpdateFamilyDto } from './dto/update-family.dto';
 
@@ -15,8 +15,13 @@ export class FamiliesService {
     return this.familyRepository.find({ where: { deleted: false } });
   }
 
-  getFamily(id: number): Promise<Family> {
-    return this.findFamily(id);
+  async getFamily(id: number): Promise<Family> {
+    await this.findFamily(id);
+    return this.familyRepository
+      .createQueryBuilder('family')
+      .leftJoinAndSelect('family.games', 'game', 'game.deleted = false')
+      .where('family.id = :id', { id })
+      .getOne();
   }
 
   createFamily(family: CreateFamilyDto): Promise<Family> {
@@ -37,9 +42,13 @@ export class FamiliesService {
     return this.familyRepository.update({ id }, { deleted: true });
   }
 
-  async findFamily(id: number): Promise<Family> {
+  async findFamily(
+    id: number,
+    options?: FindOneOptions<Family>,
+  ): Promise<Family> {
     const family = await this.familyRepository.findOne({
       where: { id, deleted: false },
+      ...options,
     });
 
     if (!family) {

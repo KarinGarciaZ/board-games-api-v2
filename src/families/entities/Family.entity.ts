@@ -1,4 +1,4 @@
-import { Game } from 'src/games/entities/game.entity';
+import { Game } from 'src/games/entities/Game.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'families' })
