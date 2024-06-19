@@ -1,14 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Family } from './entities/Family.entity';
-import { FindOneOptions, Repository, UpdateResult } from 'typeorm';
+import { DataSource, FindOneOptions, Repository, UpdateResult } from 'typeorm';
 import { CreateFamilyDto } from './dto/create-family.dto';
 import { UpdateFamilyDto } from './dto/update-family.dto';
+import { Game } from 'src/games/entities/Game.entity';
 
 @Injectable()
 export class FamiliesService {
   constructor(
     @InjectRepository(Family) private familyRepository: Repository<Family>,
+    @InjectRepository(Game) private gameRepository: Repository<Game>,
+    private dataSource: DataSource,
   ) {}
 
   getAllFamilies(): Promise<Family[]> {
@@ -38,8 +45,34 @@ export class FamiliesService {
   }
 
   async deleteFamily(id: number): Promise<UpdateResult> {
-    await this.findFamily(id);
-    return this.familyRepository.update({ id }, { deleted: true });
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const family = await this.getFamily(id);
+      if (family.games.length) {
+        await this.gameRepository
+          .createQueryBuilder('game', queryRunner)
+          .update(Game)
+          .set({ deleted: true })
+          .where({ family })
+          .execute();
+      }
+
+      await this.familyRepository
+        .createQueryBuilder('family', queryRunner)
+        .update(Family)
+        .set({ deleted: true })
+        .where({ id })
+        .execute();
+      await queryRunner.commitTransaction();
+      return;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException('Error deleting the family.');
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findFamily(
