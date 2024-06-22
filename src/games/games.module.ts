@@ -7,9 +7,15 @@ import { Brand } from 'src/brands/entities/Brand.entity';
 import { Family } from 'src/families/entities/Family.entity';
 import { BrandsService } from 'src/brands/brands.service';
 import { FamiliesService } from 'src/families/families.service';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Game, Brand, Family])],
+  imports: [
+    TypeOrmModule.forFeature([Game, Brand, Family]),
+    MulterModule.register({
+      dest: 'uploads/',
+    }),
+  ],
   providers: [GamesService, BrandsService, FamiliesService],
   controllers: [GamesController],
 })

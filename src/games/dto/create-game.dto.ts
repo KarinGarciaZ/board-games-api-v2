@@ -19,9 +19,9 @@ export class CreateGameDto {
   @IsNumberString()
   max_players: number;
 
-  // @IsNumberString()
-  // familyId: number;
+  @IsNumberString()
+  familyId: number;
 
-  // @IsNumberString()
-  // brandId: number;
+  @IsNumberString()
+  brandId: number;
 }

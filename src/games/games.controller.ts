@@ -6,12 +6,15 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { UpdateResult } from 'typeorm';
 import { Game } from './entities/game.entity';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('games')
 export class GamesController {
@@ -28,8 +31,12 @@ export class GamesController {
   }
 
   @Post()
-  saveGame(@Body() body: CreateGameDto): Promise<Game> {
-    return this.gamesService.createGame(body);
+  @UseInterceptors(FilesInterceptor('file'))
+  saveGame(
+    @Body() body: CreateGameDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.gamesService.createGame(body, files);
   }
 
   @Patch(':id')
