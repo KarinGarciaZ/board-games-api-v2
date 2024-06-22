@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GamesModule } from './games/games.module';
 import { Game } from './games/entities/Game.entity';
 import { Family } from './families/entities/Family.entity';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Family } from './families/entities/Family.entity';
     BrandsModule,
     FamiliesModule,
     GamesModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

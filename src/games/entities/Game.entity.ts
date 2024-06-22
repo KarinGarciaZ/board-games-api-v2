@@ -1,6 +1,14 @@
 import { Brand } from 'src/brands/entities/Brand.entity';
 import { Family } from 'src/families/entities/Family.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { File } from 'src/files/entities/File.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'games' })
 export class Game {
@@ -39,4 +47,8 @@ export class Game {
 
   @ManyToOne(() => Family, (family) => family.games)
   family: Family;
+
+  @ManyToMany(() => File, (file) => file.games)
+  @JoinTable()
+  files: File[];
 }

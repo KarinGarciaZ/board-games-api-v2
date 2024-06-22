@@ -40,11 +40,13 @@ export class GamesController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FilesInterceptor('file'))
   editGame(
+    @UploadedFiles() files: Express.Multer.File[],
     @Param('id') id: number,
     @Body() body: UpdateGameDto,
   ): Promise<UpdateResult> {
-    return this.gamesService.updateGame(id, body);
+    return this.gamesService.updateGame(id, body, files);
   }
 
   @Delete(':id')

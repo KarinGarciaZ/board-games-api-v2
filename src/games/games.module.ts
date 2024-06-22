@@ -8,10 +8,11 @@ import { Family } from 'src/families/entities/Family.entity';
 import { BrandsService } from 'src/brands/brands.service';
 import { FamiliesService } from 'src/families/families.service';
 import { MulterModule } from '@nestjs/platform-express';
+import { File } from 'src/files/entities/File.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Game, Brand, Family]),
+    TypeOrmModule.forFeature([Game, Brand, Family, File]),
     MulterModule.register({
       dest: 'uploads/',
     }),

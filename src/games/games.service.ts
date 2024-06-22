@@ -45,9 +45,24 @@ export class GamesService {
     return this.gameRepository.save(gameToSave);
   }
 
-  async updateGame(id: number, game: UpdateGameDto): Promise<UpdateResult> {
+  async updateGame(
+    id: number,
+    game: UpdateGameDto,
+    files: Express.Multer.File[],
+  ): Promise<UpdateResult> {
     await this.findGame(id);
-    return this.gameRepository.update({ id }, game);
+    console.log(files);
+    const { familyId, brandId, filesToDelete, ...rest } = game;
+    const family = await this.familyService.findFamily(familyId);
+    const brand = await this.brandService.findBrand(brandId);
+    return this.gameRepository.update(
+      { id },
+      {
+        ...rest,
+        family,
+        brand,
+      },
+    );
   }
 
   async deleteGame(id: number): Promise<UpdateResult> {
