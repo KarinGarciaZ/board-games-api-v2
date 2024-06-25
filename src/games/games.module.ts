@@ -9,6 +9,7 @@ import { BrandsService } from 'src/brands/brands.service';
 import { FamiliesService } from 'src/families/families.service';
 import { MulterModule } from '@nestjs/platform-express';
 import { File } from 'src/files/entities/File.entity';
+import { FilesService } from 'src/files/files.service';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { File } from 'src/files/entities/File.entity';
       dest: 'uploads/',
     }),
   ],
-  providers: [GamesService, BrandsService, FamiliesService],
+  providers: [GamesService, BrandsService, FamiliesService, FilesService],
   controllers: [GamesController],
 })
 export class GamesModule {}

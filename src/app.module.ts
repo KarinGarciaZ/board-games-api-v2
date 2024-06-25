@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GamesModule } from './games/games.module';
 import { Game } from './games/entities/Game.entity';
 import { Family } from './families/entities/Family.entity';
+import { File } from './files/entities/File.entity';
 import { FilesModule } from './files/files.module';
 
 @Module({
@@ -23,7 +24,7 @@ import { FilesModule } from './files/files.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [Game, Brand, Family],
+      entities: [Game, Brand, Family, File],
       synchronize: true,
     }),
     BrandsModule,
