@@ -16,7 +16,7 @@ export class File {
   type: string;
 
   @Column({ nullable: false })
-  size: string;
+  size: number;
 
   @Column({ default: false })
   is_main: boolean;
