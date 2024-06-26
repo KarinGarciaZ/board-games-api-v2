@@ -9,8 +9,8 @@ import { ConfigModule } from '@nestjs/config';
 import { GamesModule } from './games/games.module';
 import { Game } from './games/entities/Game.entity';
 import { Family } from './families/entities/Family.entity';
-import { File } from './files/entities/File.entity';
 import { FilesModule } from './files/files.module';
+import { File } from './files/entities/File.entity';
 
 @Module({
   imports: [
