@@ -84,7 +84,7 @@ export class GamesService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const gameToUpdate = await this.findGame(id);
+      const gameToUpdate = await this.getGame(id);
       const { familyId, brandId, filesToDelete, mainImage, ...rest } = game;
       const family = await this.familyService.findFamily(familyId);
       const brand = await this.brandService.findBrand(brandId);
@@ -96,21 +96,27 @@ export class GamesService {
       }
       const filesToRemove: number[] = JSON.parse(filesToDelete.toString());
       if (filesToRemove.length) {
-        await this.fileRepository
-          .createQueryBuilder('file', queryRunner)
-          .update(File)
-          .set({ deleted: true })
-          .where({ id: filesToRemove })
-          .execute();
+        filesToRemove.forEach(async (fileId) => {
+          await this.fileRepository
+            .createQueryBuilder('file', queryRunner)
+            .update(File)
+            .set({ deleted: true })
+            .where({ id: fileId })
+            .execute();
+        });
       }
-      console.log(1);
-      await this.fileRepository
-        .createQueryBuilder('file', queryRunner)
-        .update(File)
-        .set({ is_main: false })
-        .where({ is_main: true, deleted: false, games: [gameToUpdate] }) // TODO: Revisar games
-        .execute();
-      console.log(2);
+
+      if (gameToUpdate.files) {
+        gameToUpdate.files.forEach(async (file) => {
+          await this.fileRepository
+            .createQueryBuilder('file', queryRunner)
+            .update(File)
+            .set({ is_main: false })
+            .where({ id: file.id, deleted: false })
+            .execute();
+        });
+      }
+
       if (filesToAdd.length && !mainImage) {
         filesToAdd[0].is_main = true;
       } else if (mainImage) {
@@ -121,12 +127,13 @@ export class GamesService {
           .where({ id: mainImage })
           .execute();
       }
-      console.log(3);
+
       const gameUpdated = {
+        ...gameToUpdate,
         ...rest,
         family,
         brand,
-        files: filesToAdd,
+        files: [...gameToUpdate.files, ...filesToAdd],
       };
 
       await queryRunner.manager.save(Game, gameUpdated);
